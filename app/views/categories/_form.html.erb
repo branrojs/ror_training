@@ -1,7 +1,6 @@
 <%= render 'shared/errors', obj: @category %>
 
-<div class="row">
-  <div class="col-xs-12">
+
     <%= form_for(@category, :html => {class: "form-horizontal", role:"form"}) do |f| %>
       
       <div class="form-group">
@@ -20,6 +19,4 @@
         
       </div>
     <% end %>
-    
-  </div>
-</div>
+  
