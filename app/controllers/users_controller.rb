@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy]
-  before_action :require_same_user, only: [:edit, :update]
-
+  before_action :require_same_user, only: [:edit, :update, :destroy]
+  before_action :require_admin, only: [:destroy]
   # GET /users
   # GET /users.json
   def index
@@ -27,10 +27,11 @@ class UsersController < ApplicationController
   # POST /users.json
   def create
     @user = User.new(user_params)
-
+    
     respond_to do |format|
       if @user.save
-        format.html { redirect_to articles_path, notice: "Welcome to the blog #{@user.username}" }
+        session[:user_id] = @user.id
+        format.html { redirect_to user_path(@user), notice: "Welcome to the blog #{@user.username}" }
         format.json { render :show, status: :created, location: @user }
       else
         format.html { render :new }
@@ -70,7 +71,7 @@ class UsersController < ApplicationController
     end
     
     def require_same_user
-      if current_user != @user
+      if current_user != @user and !current_user.admin?
         flash[:notice] = "You can only edit your own account"
         redirect_to root_path
       end
@@ -80,5 +81,12 @@ class UsersController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
       params.require(:user).permit(:username, :email, :password)
+    end
+    
+    def require_admin
+      if logged_in? and !current_user.admin?
+        flash[:notice] = "Only admin users are able to do that"
+        redirect_to root_path
+      end
     end
 end

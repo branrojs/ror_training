@@ -31,6 +31,7 @@ class ArticlesController < ApplicationController
     
     respond_to do |format|
       if @article.save
+        
         format.html { redirect_to @article, notice: 'Article was successfully created.' }
         format.json { render :show, status: :created, location: @article }
       else
@@ -73,5 +74,12 @@ class ArticlesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def article_params
       params.require(:article).permit(:title, :description)
+    end
+    
+    def require_same_user
+      if current_user != @article.user && !current_user.admin?
+        flash[:notice] = "you must be logged in to perform that action"
+        redirect_to root_path
+      end
     end
 end

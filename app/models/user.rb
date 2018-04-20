@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   #has
   has_many :comments
-  has_many :articles
+  has_many :articles, dependent: :destroy
   
   #before-save
   before_save { self.email = email.downcase }  #turn into lowercase all the email
