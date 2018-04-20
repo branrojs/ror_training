@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   resources :comments
-  resources :comments
+  resources :categories, except: [:destroy]
   resources :users
   resources :articles
   # The priority is based upon order of creation: first created -> highest priority.
